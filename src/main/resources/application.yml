@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: bulk-service-scheduler
+  cloud:
+    gcp:
+      project-id: YOUR-GCP-PROJECT-ID-HERE
+      bigquery:
+        dataset-name: bulk_status
+  quartz:
+    job-store-type: memory
+    properties:
+      org:
+        quartz:
+          threadPool:
+            threadCount: 5
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+    enabled-by-default: false
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+logging:
+  level:
+    root: INFO
+    uk:
+      gov:
+        ons: INFO
+aims:
+  pubsub:
+    subscription: processing-finished-subscription
+    export-topic: bulk-scheduler-export
+  scheduler:
+    frequency-minutes: 5

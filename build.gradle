@@ -1,0 +1,47 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.8'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "io.freefair.lombok" version "6.4.3.1"
+	id 'java'
+}
+
+group = 'uk.gov.ons'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudGcpVersion', "3.3.0")
+	set('springCloudVersion', "2021.0.3")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-quartz'
+	implementation 'com.google.cloud:spring-cloud-gcp-dependencies:3.3.0'
+	implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub:3.3.0'
+	implementation 'com.google.cloud:spring-cloud-gcp-starter-bigquery:3.3.0'
+	compileOnly 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.3'
+	testImplementation 'com.playtika.testcontainers:embedded-google-pubsub:2.2.2'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
