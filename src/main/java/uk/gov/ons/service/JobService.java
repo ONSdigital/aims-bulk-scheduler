@@ -52,9 +52,9 @@ public class JobService {
 			}
 			
 		} catch (InterruptedException e) {
-			log.info(String.format("Problem querying BigQuery: %s", e.getMessage()));
+			log.error(String.format("Problem querying BigQuery: %s", e.getMessage()));
 		} catch (SchedulerException e) {
-			log.info(String.format("Problem scheduling: %s", e.getMessage()));
+			log.error(String.format("Problem scheduling: %s", e.getMessage()));
 		}
 	}
 	
