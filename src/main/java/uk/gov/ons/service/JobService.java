@@ -63,7 +63,7 @@ public class JobService {
 		List<QueryResult> qr = new ArrayList<QueryResult>();
 
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(QUERY_DATA_SET_TABLE)
-				.addNamedParameter("tableId", QueryParameterValue.string(String.format("results_", jobId))).build();
+				.addNamedParameter("tableId", QueryParameterValue.string(String.format("results_%s", jobId))).build();
 
 		TableResult results = bigQuery.query(queryConfig);
 		results.iterateAll().forEach(row -> {
