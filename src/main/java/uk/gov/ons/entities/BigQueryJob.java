@@ -24,7 +24,7 @@ public class BigQueryJob implements Job {
 		log.info("Job ** {} ** fired @ {}", context.getJobDetail().getKey().getName(), context.getFireTime());
 		
 		JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-        jobService.execute(jobDataMap.getString("tableId"), jobDataMap.getInt("expectedRows"), context.getJobDetail().getKey());
+        jobService.execute(jobDataMap.getString("jobId"), jobDataMap.getInt("expectedRows"), context.getJobDetail().getKey());
 
         log.info("Next job scheduled @ {}", context.getNextFireTime());
 	}

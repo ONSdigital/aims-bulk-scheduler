@@ -34,20 +34,20 @@ public class JobService {
 	
 	private String QUERY_DATA_SET_TABLE = "SELECT row_count FROM bulk_status.__TABLES__ WHERE table_id = @tableId";
 
-	public void execute(String tableId, int expectedRows, JobKey key) {
+	public void execute(String jobId, int expectedRows, JobKey key) {
 		
 		QueryResult queryResult = null;
 		
 		try {
 			// Should only have one result
-			queryResult = runQuery(tableId).get(0);		
+			queryResult = runQuery(jobId).get(0);		
 			
 			if (queryResult != null && (queryResult.getRowCount() == expectedRows)) {
 				// Data in BigQuery table is exportable 
 				// Create new pub sub message 
 				// Terminate the job
-				log.debug(String.format("Table: %s is now exportable", tableId));
-				messagingGateway.sendToPubsub(new ObjectMapper().createObjectNode().put("tableId", tableId).toString());
+				log.debug(String.format("Table: results_%s is now exportable.", jobId));
+				messagingGateway.sendToPubsub(new ObjectMapper().createObjectNode().put("jobId", jobId).toString());
 				scheduler.deleteJob(key);
 			}
 			
@@ -58,12 +58,12 @@ public class JobService {
 		}
 	}
 	
-	private List<QueryResult> runQuery(String tableId) throws InterruptedException {
+	private List<QueryResult> runQuery(String jobId) throws InterruptedException {
 
 		List<QueryResult> qr = new ArrayList<QueryResult>();
 
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(QUERY_DATA_SET_TABLE)
-				.addNamedParameter("tableId", QueryParameterValue.string(tableId)).build();
+				.addNamedParameter("tableId", QueryParameterValue.string(String.format("results_", jobId))).build();
 
 		TableResult results = bigQuery.query(queryConfig);
 		results.iterateAll().forEach(row -> {

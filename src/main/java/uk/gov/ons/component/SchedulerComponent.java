@@ -20,10 +20,10 @@ public class SchedulerComponent {
 	@Value("${aims.scheduler.frequency-minutes}")
 	private int frequencyInMinutes;
 	
-	public JobDetail createJobDetail(String jobName, String tableId, int expectedRows) {
+	public JobDetail createJobDetail(String jobName, String jobId, int expectedRows) {
 		
 		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put("tableId", tableId);
+		jobDataMap.put("jobId", jobId);
 		jobDataMap.put("expectedRows", expectedRows);
 		
         return JobBuilder.newJob(BigQueryJob.class)
