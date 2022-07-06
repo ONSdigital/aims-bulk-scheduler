@@ -7,6 +7,6 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public @Data class Payload {
 	
-	private String resultTable;
+	private String jobId;
 	private int expectedRows;
 }
