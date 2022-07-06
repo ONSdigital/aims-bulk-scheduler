@@ -95,7 +95,7 @@ public class PubSubComponent {
 				String jobId = msg.getPayload().getJobId();
 				int expectedRows = msg.getPayload().getExpectedRows();
 				
-				JobDetail jobDetail = schedulerComponent.createJobDetail(String.format("Job_results_%s", jobId), jobId, expectedRows);
+				JobDetail jobDetail = schedulerComponent.createJobDetail(String.format("job_results_%s", jobId), jobId, expectedRows);
 				Trigger trigger = schedulerComponent.createTrigger(jobDetail);
 				scheduler.scheduleJob(jobDetail, trigger);
 				
