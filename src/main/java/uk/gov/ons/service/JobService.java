@@ -46,7 +46,7 @@ public class JobService {
 				// Data in BigQuery table is exportable 
 				// Create new pub sub message 
 				// Terminate the job
-				log.debug(String.format("Table: %s is now exportable. Job: ", jobId));
+				log.debug(String.format("Table: results_%s is now exportable.", jobId));
 				messagingGateway.sendToPubsub(new ObjectMapper().createObjectNode().put("jobId", jobId).toString());
 				scheduler.deleteJob(key);
 			}
