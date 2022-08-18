@@ -8,5 +8,6 @@ import lombok.Data;
 public @Data class Payload {
 	
 	private String jobId;
+	private String idsJobId;
 	private int expectedRows;
 }

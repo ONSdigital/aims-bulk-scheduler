@@ -34,7 +34,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.3'
-	testImplementation 'com.playtika.testcontainers:embedded-google-pubsub:2.2.2'
+	testImplementation 'com.playtika.testcontainers:embedded-google-pubsub:2.2.5'
 }
 
 dependencyManagement {
