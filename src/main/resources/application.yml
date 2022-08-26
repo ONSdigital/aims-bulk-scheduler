@@ -33,7 +33,7 @@ logging:
     root: INFO
     uk:
       gov:
-        ons: DEBUG
+        ons: INFO
 aims:
   pubsub:
     subscription: processing-finished-subscription
