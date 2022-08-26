@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
@@ -32,6 +33,7 @@ import uk.gov.ons.entities.Message;
 
 @Slf4j
 @Component
+@Profile("!test")
 public class PubSubComponent {
 	
 	@Value("${spring.cloud.gcp.project-id}")
@@ -93,9 +95,10 @@ public class PubSubComponent {
 				
 				// Schedule Job for this resultset
 				String jobId = msg.getPayload().getJobId();
+				String idsJobId = msg.getPayload().getIdsJobId();
 				int expectedRows = msg.getPayload().getExpectedRows();
 				
-				JobDetail jobDetail = schedulerComponent.createJobDetail(String.format("job_results_%s", jobId), jobId, expectedRows);
+				JobDetail jobDetail = schedulerComponent.createJobDetail(String.format("job_results_%s", jobId), jobId, idsJobId, expectedRows);
 				Trigger trigger = schedulerComponent.createTrigger(jobDetail);
 				scheduler.scheduleJob(jobDetail, trigger);
 				
