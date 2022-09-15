@@ -19,7 +19,8 @@ import com.google.cloud.bigquery.TableResult;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.component.PubSubComponent.PubsubOutboundGateway;
 import uk.gov.ons.entities.Exportable;
-import uk.gov.ons.entities.QueryResult;
+import uk.gov.ons.entities.QueryCountResult;
+import uk.gov.ons.entities.QueryRowCountResult;
 
 @Slf4j
 @Service
@@ -34,14 +35,17 @@ public class JobService {
 	@Autowired
 	private PubsubOutboundGateway messagingGateway;
 	
-	private String QUERY_DATA_SET_TABLE = "SELECT row_count FROM bulk_status.__TABLES__ WHERE table_id = @tableId";
-	private String QUERY_IDS_DATA_SET_TABLE = "SELECT row_count FROM ids_results.__TABLES__ WHERE table_id = @tableId";
+	private String QUERY_ROW_COUNT_DATA_SET_TABLE = "SELECT row_count FROM bulk_status.__TABLES__ WHERE table_id = @tableId";
+	private String QUERY_ROW_COUNT_IDS_DATA_SET_TABLE = "SELECT row_count FROM ids_results.__TABLES__ WHERE table_id = @tableId";
+	private String QUERY_COUNT_DATA_SET_TABLE = "SELECT COUNT(1) AS count FROM bulk_status.%s%s";
+	private String QUERY_COUNT_IDS_DATA_SET_TABLE = "SELECT COUNT(1) AS count FROM ids_results.%s%s";
 	private String TABLE_ID = "results_";
 	private String IDS_TABLE_ID = "ids_results_";
 
 	public void execute(String jobId, String idsJobId, int expectedRows, JobKey key) {
 		
-		QueryResult queryResult = null;
+		QueryRowCountResult queryRowCountResult = null;
+		QueryCountResult queryCountResult = null;
 		
 		try {
 			// Is this an idsJob?
@@ -55,9 +59,10 @@ public class JobService {
 			}
 		
 			// Should only have one result
-			queryResult = runQuery(jobId, idsJob).get(0);		
+			queryRowCountResult = runRowCountQuery(jobId, idsJob).get(0);
+			queryCountResult = runCountQuery(jobId, idsJob).get(0);
 			
-			if (queryResult != null && (queryResult.getRowCount() == expectedRows)) {
+			if (queryRowCountResult != null && queryCountResult != null && (queryRowCountResult.getRowCount() == queryCountResult.getCount())) {
 				
 				// Data in BigQuery table is exportable
 				// Cloud Function will update bulk-status-db to results-ready in required table
@@ -80,11 +85,11 @@ public class JobService {
 		}
 	}
 	
-	private List<QueryResult> runQuery(String jobId, boolean idsJob) throws InterruptedException {
+	private List<QueryRowCountResult> runRowCountQuery(String jobId, boolean idsJob) throws InterruptedException {
 
-		List<QueryResult> qr = new ArrayList<QueryResult>();
+		List<QueryRowCountResult> qr = new ArrayList<QueryRowCountResult>();
 		
-		String datasetTable = idsJob ? QUERY_IDS_DATA_SET_TABLE : QUERY_DATA_SET_TABLE;
+		String datasetTable = idsJob ? QUERY_ROW_COUNT_IDS_DATA_SET_TABLE : QUERY_ROW_COUNT_DATA_SET_TABLE;
 		String tableId = idsJob ? IDS_TABLE_ID : TABLE_ID;
 		
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(datasetTable)
@@ -92,7 +97,24 @@ public class JobService {
 
 		TableResult results = bigQuery.query(queryConfig);
 		results.iterateAll().forEach(row -> {
-			qr.add(new QueryResult(row.get("row_count").getLongValue()));
+			qr.add(new QueryRowCountResult(row.get("row_count").getLongValue()));
+		});
+
+		return qr;
+	}
+	
+	private List<QueryCountResult> runCountQuery(String jobId, boolean idsJob) throws InterruptedException {
+
+		List<QueryCountResult> qr = new ArrayList<QueryCountResult>();
+		
+		String tableId = idsJob ? IDS_TABLE_ID : TABLE_ID;
+		String query = idsJob ? String.format(QUERY_COUNT_IDS_DATA_SET_TABLE, tableId, jobId) : String.format(QUERY_COUNT_DATA_SET_TABLE, tableId, jobId);
+		
+		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+
+		TableResult results = bigQuery.query(queryConfig);
+		results.iterateAll().forEach(row -> {
+			qr.add(new QueryCountResult(row.get("count").getLongValue()));
 		});
 
 		return qr;
