@@ -2,11 +2,11 @@ package uk.gov.ons.entities;
 
 import lombok.Data;
 
-public @Data class QueryResult {
+public @Data class QueryRowCountResult {
 	
 	private Long rowCount;
 
-	public QueryResult(Long rowCount) {
+	public QueryRowCountResult(Long rowCount) {
 		super();
 		this.rowCount = rowCount;
 	}
