@@ -62,6 +62,9 @@ public class JobService {
 			queryRowCountResult = runRowCountQuery(jobId, idsJob).get(0);
 			queryCountResult = runCountQuery(jobId, idsJob).get(0);
 			
+			log.debug(String.format("queryRowCountResult: %d", queryRowCountResult.getRowCount()));
+			log.debug(String.format("queryCountResult: %d", queryCountResult.getCount()));
+			
 			if (queryRowCountResult != null && queryCountResult != null && (queryRowCountResult.getRowCount() == queryCountResult.getCount())) {
 				
 				// Data in BigQuery table is exportable
