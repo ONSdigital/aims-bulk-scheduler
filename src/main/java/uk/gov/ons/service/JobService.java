@@ -65,7 +65,7 @@ public class JobService {
 			log.debug(String.format("queryRowCountResult: %d", queryRowCountResult.getRowCount()));
 			log.debug(String.format("queryCountResult: %d", queryCountResult.getCount()));
 			
-			if (queryRowCountResult != null && queryCountResult != null && (queryRowCountResult.getRowCount() == queryCountResult.getCount())) {
+			if (queryRowCountResult != null && queryCountResult != null && (queryRowCountResult.getRowCount().equals(queryCountResult.getCount()))) {
 				
 				// Data in BigQuery table is exportable
 				// Cloud Function will update bulk-status-db to results-ready in required table
