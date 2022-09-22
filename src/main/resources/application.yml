@@ -19,7 +19,7 @@ spring:
           jobStore: 
             class: org.quartz.impl.jdbcjobstore.JobStoreTX
             driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-            dataSource: quartzDataSource
+            dataSource: ons-aims-analysis-prod:europe-west2:bulk-status-instance
           threadPool:
             threadCount: 5
   datasource:
