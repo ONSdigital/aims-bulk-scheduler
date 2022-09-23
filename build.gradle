@@ -29,6 +29,7 @@ dependencies {
 	implementation 'com.google.cloud:spring-cloud-gcp-dependencies:3.3.0'
 	implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub:3.3.0'
 	implementation 'com.google.cloud:spring-cloud-gcp-starter-bigquery:3.3.0'
+	implementation 'com.google.cloud:spring-cloud-gcp-starter-sql-mysql:3.3.0'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	compileOnly 'org.projectlombok:lombok'
