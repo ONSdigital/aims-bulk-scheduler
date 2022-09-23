@@ -19,11 +19,13 @@ spring:
           jobStore: 
             class: org.quartz.impl.jdbcjobstore.JobStoreTX
             driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            dataSource: quartzDataSource
           threadPool:
             threadCount: 5
   datasource:
     username: YOUR-DATABASE-USER
     password: YOUR-DATABASE-PASSWORD
+    name: quartzDataSource
 management:
   endpoints:
     web:
