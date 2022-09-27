@@ -12,14 +12,12 @@ spring:
   quartz:
     job-store-type: jdbc
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
     properties:
       org:
         quartz:
           jobStore: 
-            class: org.quartz.impl.jdbcjobstore.JobStoreTX
             driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-            dataSource: ons-aims-analysis-prod:europe-west2:bulk-status-instance
           threadPool:
             threadCount: 5
   datasource:
