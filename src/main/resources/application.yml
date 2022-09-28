@@ -23,6 +23,9 @@ spring:
   datasource:
     username: YOUR-DATABASE-USER
     password: YOUR-DATABASE-PASSWORD
+  sql:
+    init:
+      platform: mysql
 management:
   endpoints:
     web:

@@ -3,3 +3,10 @@ spring:
     gcp:
       project-id: ${embedded.google.pubsub.project-id}
       pubsub.emulatorHost: ${embedded.google.pubsub.host}:${embedded.google.pubsub.port}
+      sql:
+        enabled: false
+  datasource:
+    url: jdbc:h2:mem:test
+  sql:
+    init:
+      platform: h2
