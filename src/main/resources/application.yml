@@ -18,11 +18,12 @@ spring:
         quartz:
           jobStore: 
             driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-          threadPool:
-            threadCount: 5
   datasource:
     username: YOUR-DATABASE-USER
     password: YOUR-DATABASE-PASSWORD
+  sql:
+    init:
+      platform: mysql
 management:
   endpoints:
     web:
