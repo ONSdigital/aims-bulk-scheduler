@@ -7,6 +7,9 @@ spring:
         enabled: false
   datasource:
     url: jdbc:h2:mem:test
+  quartz:
+    jdbc:
+      initialize-schema: never
   sql:
     init:
       platform: h2
