@@ -54,6 +54,9 @@ public class PubSubComponent {
 	@Autowired
 	private SchedulerComponent schedulerComponent;
 	
+	private final String JOB_NAME = "job_results";
+	private final String JOB_NAME_IDS = "job_results_ids";
+		
 	@Bean
 	public MessageChannel pubsubInputChannel() {
 		return new DirectChannel();
@@ -97,8 +100,9 @@ public class PubSubComponent {
 				String jobId = msg.getPayload().getJobId();
 				String idsJobId = msg.getPayload().getIdsJobId();
 				int expectedRows = msg.getPayload().getExpectedRows();
+				String jobName = idsJobId != null && idsJobId.length() > 0 ? JOB_NAME_IDS : JOB_NAME;
 				
-				JobDetail jobDetail = schedulerComponent.createJobDetail(String.format("job_results_%s", jobId), jobId, idsJobId, expectedRows);
+				JobDetail jobDetail = schedulerComponent.createJobDetail(String.format("%s_%s", jobName, jobId), jobId, idsJobId, expectedRows);
 				Trigger trigger = schedulerComponent.createTrigger(jobDetail);
 				scheduler.scheduleJob(jobDetail, trigger);
 				
