@@ -1,11 +1,17 @@
-package uk.gov.ons.service;
+package uk.gov.ons.bulk.scheduler.service;
 
+import static uk.gov.ons.bulk.scheduler.util.SchedulerConstants.SCHEDULER_GROUP;
+
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +23,12 @@ import com.google.cloud.bigquery.QueryParameterValue;
 import com.google.cloud.bigquery.TableResult;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.component.PubSubComponent.PubsubOutboundGateway;
-import uk.gov.ons.entities.Exportable;
-import uk.gov.ons.entities.QueryCountResult;
-import uk.gov.ons.entities.QueryRowCountResult;
+import uk.gov.ons.bulk.scheduler.component.PubSubComponent.PubsubOutboundGateway;
+import uk.gov.ons.bulk.scheduler.entities.BulkSchedulerJob;
+import uk.gov.ons.bulk.scheduler.entities.BulkSchedulerTrigger;
+import uk.gov.ons.bulk.scheduler.entities.Exportable;
+import uk.gov.ons.bulk.scheduler.entities.QueryCountResult;
+import uk.gov.ons.bulk.scheduler.entities.QueryRowCountResult;
 
 @Slf4j
 @Service
@@ -44,9 +52,6 @@ public class JobService {
 
 	public void execute(String jobId, String idsJobId, int expectedRows, JobKey key) {
 		
-		QueryRowCountResult queryRowCountResult = null;
-		QueryCountResult queryCountResult = null;
-		
 		try {
 			// Is this an idsJob?
 			boolean idsJob;
@@ -59,13 +64,14 @@ public class JobService {
 			}
 		
 			// Should only have one result
-			queryRowCountResult = runRowCountQuery(jobId, idsJob).get(0);
-			queryCountResult = runCountQuery(jobId, idsJob).get(0);
+			List<QueryRowCountResult> queryRowCountResultList = runRowCountQuery(jobId, idsJob);
+			List<QueryCountResult> queryCountResultList = runCountQuery(jobId, idsJob);
 			
-			log.debug(String.format("queryRowCountResult: %d", queryRowCountResult.getRowCount()));
-			log.debug(String.format("queryCountResult: %d", queryCountResult.getCount()));
-			
-			if (queryRowCountResult != null && queryCountResult != null && (queryRowCountResult.getRowCount().equals(queryCountResult.getCount()))) {
+			if (queryRowCountResultList.size() > 0 && queryCountResultList.size() > 0 
+					&& (queryRowCountResultList.get(0).getRowCount().equals(queryCountResultList.get(0).getCount()))) {
+				
+				log.debug(String.format("queryRowCountResult: %d", queryRowCountResultList.get(0).getRowCount()));
+				log.debug(String.format("queryCountResult: %d", queryCountResultList.get(0).getCount()));
 				
 				// Data in BigQuery table is exportable
 				// Cloud Function will update bulk-status-db to results-ready in required table
@@ -86,6 +92,34 @@ public class JobService {
 		} catch (JsonProcessingException e) {
 			log.error(String.format("Problem creating Exportable object: %s", e.getMessage()));
 		}
+	}
+	
+	public boolean deleteJob(String jobName) throws SchedulerException {
+		return scheduler.deleteJob(new JobKey(jobName, SCHEDULER_GROUP));
+	}
+	
+	public List<BulkSchedulerJob> getJobs() throws SchedulerException {
+
+		List<BulkSchedulerJob> jobs = new ArrayList<BulkSchedulerJob>();
+		
+		for(JobKey key : scheduler.getJobKeys(GroupMatcher.groupEquals(SCHEDULER_GROUP))) {			
+			JobDetail detail = scheduler.getJobDetail(key);
+			List<BulkSchedulerTrigger> triggers = new ArrayList<BulkSchedulerTrigger>();
+
+			for (Trigger trigger : scheduler.getTriggersOfJob(key)) {
+				
+				triggers.add(new BulkSchedulerTrigger(trigger.getDescription(),
+						trigger.getNextFireTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+						trigger.getPreviousFireTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+			}
+			
+			jobs.add(new BulkSchedulerJob(detail.getKey().getName(), 
+					detail.getKey().getGroup(), 
+					detail.getDescription(), 
+					triggers));
+		}
+		
+		return jobs;
 	}
 	
 	private List<QueryRowCountResult> runRowCountQuery(String jobId, boolean idsJob) throws InterruptedException {
