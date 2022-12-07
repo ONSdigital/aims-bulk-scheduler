@@ -1,4 +1,4 @@
-package uk.gov.ons.entities;
+package uk.gov.ons.bulk.scheduler.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

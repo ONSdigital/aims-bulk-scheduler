@@ -1,4 +1,4 @@
-package uk.gov.ons.entities;
+package uk.gov.ons.bulk.scheduler.entities;
 
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.service.JobService;
+import uk.gov.ons.bulk.scheduler.service.JobService;
 
 @Slf4j
 @Component

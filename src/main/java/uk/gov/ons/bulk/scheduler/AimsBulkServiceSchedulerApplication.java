@@ -1,4 +1,4 @@
-package uk.gov.ons;
+package uk.gov.ons.bulk.scheduler;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
