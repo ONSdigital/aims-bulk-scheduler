@@ -41,7 +41,6 @@ public class SchedulerComponent {
         return TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
                 .withIdentity(jobDetail.getKey().getName(), TRIGGER_GROUP)
-                .withDescription("Query BigQuery status of result table Trigger")
                 .startAt(Date.from(ZonedDateTime.now().plusMinutes(frequencyInMinutes).toInstant()))
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
                 		.withIntervalInMinutes(frequencyInMinutes)
