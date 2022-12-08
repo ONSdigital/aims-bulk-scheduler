@@ -2,6 +2,7 @@ package uk.gov.ons.bulk.scheduler.service;
 
 import static uk.gov.ons.bulk.scheduler.util.SchedulerConstants.SCHEDULER_GROUP;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,9 +109,12 @@ public class JobService {
 
 			for (Trigger trigger : scheduler.getTriggersOfJob(key)) {
 				
-				triggers.add(new BulkSchedulerTrigger(trigger.getDescription(),
-						trigger.getNextFireTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-						trigger.getPreviousFireTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+				LocalDateTime nextFireTime = trigger.getNextFireTime() != null ? 
+						trigger.getNextFireTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime() : null;
+				LocalDateTime previousFireTime = trigger.getPreviousFireTime() != null ? 
+						trigger.getPreviousFireTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime() : null;
+				
+				triggers.add(new BulkSchedulerTrigger(trigger.getDescription(),	nextFireTime, previousFireTime));
 			}
 			
 			jobs.add(new BulkSchedulerJob(detail.getKey().getName(), 
