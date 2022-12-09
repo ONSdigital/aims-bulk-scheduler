@@ -74,26 +74,23 @@ public class BulkSchedulerController {
 	public ResponseEntity<String> deleteScheduledJob(
 			@PathVariable(required = true, name = "jobname") @NotBlank(message = "{jobname.val.message}") String jobName) {
 		
-		try {
-			String response = jobService.deleteJob(jobName) ? String.format("Job with name %s not found on the system", jobName) :
-				String.format("Job with name %s not found on the system", jobName);
-			
+		try {		
 			boolean deleteResult = jobService.deleteJob(jobName);
 			
 			if (deleteResult) {
 				String happyResponse = String.format("Scheduled Job %s removed from the system", jobName);
-				log.info(response);
+				log.info(happyResponse);
 				return ResponseEntity.ok()
 						.body(new ObjectMapper().createObjectNode().put("success", happyResponse).toString());
 
 			} else {
 				String unhappyResponse = String.format("Scheduled Job %s not found on the system", jobName);
-				log.info(response);
+				log.info(unhappyResponse);
 				return ResponseEntity.badRequest()
 						.body(new ObjectMapper().createObjectNode().put("error", unhappyResponse).toString());
 			}
 		} catch (SchedulerException e) {
-			String response = String.format("/jobs error: %s", e.getMessage());
+			String response = String.format("/job/%s error: %s", jobName, e.getMessage());
 			log.error(response);
 			return ResponseEntity.internalServerError()
 					.body(new ObjectMapper().createObjectNode().put("error", response).toString());
