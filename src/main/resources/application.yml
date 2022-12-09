@@ -1,5 +1,5 @@
 application-description: Monitor BigQuery tables to determine when streaming buffer is empty and table can be exported
-application-version: 0.0.23
+application-version: 0.0.24
 spring:
   application:
     name: bulk-service-scheduler
