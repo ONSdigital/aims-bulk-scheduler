@@ -1,4 +1,4 @@
-package uk.gov.ons.component;
+package uk.gov.ons.bulk.scheduler.component;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -20,12 +21,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 
-import uk.gov.ons.entities.Message;
+import uk.gov.ons.bulk.scheduler.entities.Message;
 
 @SpringBootTest()
 @ExtendWith(SpringExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
+@DirtiesContext
 class PubSubComponentTest {
 	
 	@Autowired

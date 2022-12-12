@@ -1,4 +1,4 @@
-package uk.gov.ons.component;
+package uk.gov.ons.bulk.scheduler.component;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.entities.Message;
+import uk.gov.ons.bulk.scheduler.entities.Message;
 
 @Slf4j
 @Component

@@ -1,4 +1,7 @@
-package uk.gov.ons.component;
+package uk.gov.ons.bulk.scheduler.component;
+
+import static uk.gov.ons.bulk.scheduler.util.SchedulerConstants.SCHEDULER_GROUP;
+import static uk.gov.ons.bulk.scheduler.util.SchedulerConstants.TRIGGER_GROUP;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -12,7 +15,7 @@ import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import uk.gov.ons.entities.BigQueryJob;
+import uk.gov.ons.bulk.scheduler.entities.BigQueryJob;
 
 @Component
 public class SchedulerComponent {
@@ -28,7 +31,7 @@ public class SchedulerComponent {
 		jobDataMap.put("expectedRows", expectedRows);
 		
         return JobBuilder.newJob(BigQueryJob.class)
-                .withIdentity(jobName, "bulk-query-jobs")
+                .withIdentity(jobName, SCHEDULER_GROUP)
                 .withDescription("Query BigQuery status of result table")
                 .usingJobData(jobDataMap)
                 .build();
@@ -37,8 +40,7 @@ public class SchedulerComponent {
     public Trigger createTrigger(JobDetail jobDetail) {
         return TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
-                .withIdentity(jobDetail.getKey().getName(), "bulk-query-triggers")
-                .withDescription("Query BigQuery status of result table Trigger")
+                .withIdentity(jobDetail.getKey().getName(), TRIGGER_GROUP)
                 .startAt(Date.from(ZonedDateTime.now().plusMinutes(frequencyInMinutes).toInstant()))
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
                 		.withIntervalInMinutes(frequencyInMinutes)
