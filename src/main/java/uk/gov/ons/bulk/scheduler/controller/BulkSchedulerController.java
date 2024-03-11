@@ -2,8 +2,6 @@ package uk.gov.ons.bulk.scheduler.controller;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.bulk.scheduler.entities.BulkSchedulerJob;
 import uk.gov.ons.bulk.scheduler.service.JobService;
