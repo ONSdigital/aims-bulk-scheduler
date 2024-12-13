@@ -29,6 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import uk.gov.ons.bulk.scheduler.entities.BulkSchedulerJob;
 import uk.gov.ons.bulk.scheduler.entities.BulkSchedulerTrigger;
