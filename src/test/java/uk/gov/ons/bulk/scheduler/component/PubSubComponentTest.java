@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest()
 @ExtendWith(SpringExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
-@ActiveProfiles({"test", "test-integration"})
+@ActiveProfiles("test")
 @DirtiesContext
 class PubSubComponentTest {
 	

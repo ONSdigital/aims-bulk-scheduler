@@ -33,7 +33,6 @@ import uk.gov.ons.bulk.scheduler.entities.Message;
 
 @Slf4j
 @Component
-@Profile("!test")
 public class PubSubComponent {
 	
 	@Value("${spring.cloud.gcp.project-id}")
