@@ -26,7 +26,7 @@ import uk.gov.ons.bulk.scheduler.entities.Message;
 @SpringBootTest()
 @ExtendWith(SpringExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "test-integration"})
 @DirtiesContext
 class PubSubComponentTest {
 	
