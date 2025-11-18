@@ -80,9 +80,4 @@ test {
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)
     }
-
-//    if (project.hasProperty('excludeTests')) {
-//        exclude project.property('excludeTests')
-//        exclude '*bootstrap.properties'
-//    }
 }

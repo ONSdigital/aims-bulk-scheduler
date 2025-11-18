@@ -18,12 +18,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5.0.0
 
-      - name: Google Auth
-        id: auth
-        uses: 'google-github-actions/auth@v3'
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+      # IS THIS NEEDED FOR TESTS TO RUN? PUBSUB TESTS MAY REQUIRE IT
+#      - name: Google Auth
+#        id: auth
+#        uses: 'google-github-actions/auth@v3'
+#        with:
+#          project_id: ${{ env.PROJECT_ID }}
+#          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5.0.0
