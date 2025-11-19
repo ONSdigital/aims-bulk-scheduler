@@ -1,15 +1,9 @@
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   cloud:
     gcp:
       project-id: ${embedded.google.pubsub.project-id}
       pubsub.emulatorHost: ${embedded.google.pubsub.host}:${embedded.google.pubsub.port}
       sql:
         enabled: false
-  datasource:
-    url: jdbc:h2:mem:test
-  quartz:
-    jdbc:
-      initialize-schema: never
-  sql:
-    init:
-      platform: h2

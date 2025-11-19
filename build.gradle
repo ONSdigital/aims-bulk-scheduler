@@ -1,3 +1,5 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
 plugins {
 	id 'org.springframework.boot' version '3.4.0'
 	id 'io.spring.dependency-management' version '1.1.6'
@@ -42,7 +44,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:4.2.0'
 	testImplementation 'com.playtika.testcontainers:embedded-google-pubsub:3.1.9'
-	testImplementation 'com.h2database:h2:2.3.232'
 	testImplementation 'org.mockito:mockito-core:5.14.2'
 	mockitoAgent 'org.mockito:mockito-core:5.14.2'
 }
@@ -58,9 +59,25 @@ dependencyManagement {
 	}
 }
 
-tasks.named('test') {
-	doFirst { 
+test {
+    useJUnitPlatform()
+
+    doFirst {
         jvmArgs("-javaagent:${configurations.mockitoAgent.singleFile}")
     }
-	useJUnitPlatform()
+
+    OperatingSystem os = DefaultNativePlatform.currentOperatingSystem;
+
+    if (os.isLinux()) {
+        def uid = ["id", "-u"].execute().text.trim()
+        environment "DOCKER_HOST", "unix:///run/user/$uid/podman/podman.sock"
+    } else if (os.isMacOsX()) {
+        environment "DOCKER_HOST", "unix:///Users/${System.getenv('USER')}/.colima/default/docker.sock"
+    }
+    environment "TESTCONTAINERS_RYUK_DISABLED", "true"
+
+    // listen to events in the test execution lifecycle
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
+    }
 }
