@@ -6,7 +6,7 @@ env:
   IMAGE_NAME: 'address-index-bulk-scheduler'
   PROJECT_ID: 'ons-ci-aims'
   AR_REPO_LOCATION: 'europe-west2'
-  AR_URL: 'europe-west2-docker.pkg.dev/ons-ci-aims/aims-bulk-api-repository'
+  AR_URL: 'europe-west2-docker.pkg.dev/ons-ci-aims/aims-bulk-scheduler-repository'
   WORKLOAD_IDENTITY_PROVIDER: 'projects/709138365636/locations/global/workloadIdentityPools/github-actions-aims-pool/providers/aims-bulk-scheduler-provider'
 permissions:
   contents: read
