@@ -32,11 +32,11 @@ ext {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-quartz'
 	implementation 'com.google.cloud:spring-cloud-gcp-dependencies:5.9.0'
 	implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub'
 	implementation 'com.google.cloud:spring-cloud-gcp-starter-bigquery'
-	implementation 'com.google.cloud:spring-cloud-gcp-starter-sql-mysql'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
