@@ -22,6 +22,8 @@ spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/bulk-status-db?useIamAuth=true
     username: YOUR-SA
+  autoconfigure:
+    exclude: com.google.cloud.spring.autoconfigure.sql.GcpCloudSqlAutoConfiguration
   sql:
     init:
       platform: mysql
