@@ -8,9 +8,6 @@ spring:
       project-id: YOUR-GCP-PROJECT-ID-HERE
       bigquery:
         dataset-name: bulk_status
-      sql:
-        database-name: bulk-status-db
-        instance-connection-name: YOUR-GCP-PROJECT-ID-HERE:europe-west2:bulk-status-instance
   quartz:
     job-store-type: jdbc
     jdbc:
@@ -23,8 +20,8 @@ spring:
           threadPool:
             threadCount: 5
   datasource:
-    username: YOUR-DATABASE-USER
-    password: YOUR-DATABASE-PASSWORD
+    url: jdbc:mysql://127.0.0.1:3306/bulk-status-db?useIamAuth=true
+    username: YOUR-SA
   sql:
     init:
       platform: mysql
