@@ -33,7 +33,7 @@ ext {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'mysql:mysql-connector-java'
+	implementation 'com.mysql:mysql-connector-j'
 	implementation 'org.springframework.boot:spring-boot-starter-quartz'
 	implementation 'com.google.cloud:spring-cloud-gcp-dependencies:5.9.0'
 	implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub'
