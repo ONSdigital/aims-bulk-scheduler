@@ -8,6 +8,8 @@ spring:
       project-id: YOUR-GCP-PROJECT-ID-HERE
       bigquery:
         dataset-name: bulk_status
+      sql:
+        database-name: bulk-status-db
   quartz:
     job-store-type: jdbc
     jdbc:
