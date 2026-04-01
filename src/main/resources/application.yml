@@ -8,8 +8,10 @@ spring:
       project-id: YOUR-GCP-PROJECT-ID-HERE
       bigquery:
         dataset-name: bulk_status
-      sql:
-        database-name: bulk-status-db
+  auto-configure:
+    exclude:
+      - com.google.cloud.spring.autoconfigure.sql.CloudSqlJdbcAutoConfiguration
+      - com.google.cloud.spring.autoconfigure.sql.CloudSqlEnvironmentPostProcessor
   quartz:
     job-store-type: jdbc
     jdbc:
