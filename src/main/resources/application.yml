@@ -20,7 +20,7 @@ spring:
           threadPool:
             threadCount: 5
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/bulk-status-db?useIamAuth=true
+    url: jdbc:mysql://127.0.0.1:3306/bulk-status-db?socketFactory=com.google.cloud.sql.mysql.SocketFactory
     username: YOUR-SA
   autoconfigure:
     exclude: com.google.cloud.spring.autoconfigure.sql.GcpCloudSqlAutoConfiguration
