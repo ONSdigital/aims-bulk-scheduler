@@ -7,6 +7,6 @@ spring:
       credentials:
         enabled: false
       pubsub:
-        emulatorHost: ${embedded.google.pubsub.host}:${embedded.google.pubsub.port}
+        emulator-host: ${embedded.google.pubsub.host}:${embedded.google.pubsub.port}
       sql:
         enabled: false
