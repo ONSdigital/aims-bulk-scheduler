@@ -11,7 +11,7 @@ import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
 import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.ons.bulk.scheduler.component.PubSubComponent.PubsubOutboundGateway;
+import uk.gov.ons.bulk.scheduler.component.PubSubOutboundComponent.PubsubOutboundGateway;
 
 import java.util.Collections;
 import java.util.List;
