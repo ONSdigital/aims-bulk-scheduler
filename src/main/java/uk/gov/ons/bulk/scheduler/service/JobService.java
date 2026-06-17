@@ -24,7 +24,7 @@ import com.google.cloud.bigquery.QueryParameterValue;
 import com.google.cloud.bigquery.TableResult;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.bulk.scheduler.component.PubSubComponent.PubsubOutboundGateway;
+import uk.gov.ons.bulk.scheduler.component.PubSubOutboundComponent.PubsubOutboundGateway;
 import uk.gov.ons.bulk.scheduler.entities.BulkSchedulerJob;
 import uk.gov.ons.bulk.scheduler.entities.BulkSchedulerTrigger;
 import uk.gov.ons.bulk.scheduler.entities.Exportable;

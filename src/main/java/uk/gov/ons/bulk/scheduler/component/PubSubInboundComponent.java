@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.MessageChannel;
@@ -24,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
-import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 
@@ -33,34 +31,29 @@ import uk.gov.ons.bulk.scheduler.entities.Message;
 
 @Slf4j
 @Component
-public class PubSubComponent {
-	
+@Profile("!test")
+public class PubSubInboundComponent {
+
 	@Value("${spring.cloud.gcp.project-id}")
 	private String gcpProject;
-	
+
 	@Value("${aims.pubsub.subscription}")
 	private String pubsubSubscription;
-	
-	@Value("${aims.pubsub.export-topic}")
-	private String pubsubExportTopic;
-	
-	@Value("${aims.scheduler.frequency-minutes}")
-	private int frequencyInMinutes;
-	
+
 	@Autowired
 	private Scheduler scheduler;
-	
+
 	@Autowired
 	private SchedulerComponent schedulerComponent;
-	
+
 	private final String JOB_NAME = "job_results";
 	private final String JOB_NAME_IDS = "job_results_ids";
-		
+
 	@Bean
 	public MessageChannel pubsubInputChannel() {
 		return new DirectChannel();
 	}
-	
+
 	@Bean
 	public PubSubInboundChannelAdapter messageChannelAdapter(
 			@Qualifier("pubsubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
@@ -73,53 +66,42 @@ public class PubSubComponent {
 	}
 
 	@Bean
-	@ServiceActivator(inputChannel = "pubsubOutputChannel")
-	public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
-		return new PubSubMessageHandler(pubsubTemplate, pubsubExportTopic);
-	}
-	
-	@MessagingGateway(defaultRequestChannel = "pubsubOutputChannel")
-	public interface PubsubOutboundGateway {
-
-		void sendToPubsub(String text);
-	}
-
-	@Bean
 	@ServiceActivator(inputChannel = "pubsubInputChannel")
 	public MessageHandler messageReceiver() {
 		return message -> {
 			log.debug("Message arrived! Payload: " + new String((byte[]) message.getPayload()));
-			
+
 			try {
 				Message msg = new ObjectMapper().setDefaultSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
 						.readValue((byte[]) message.getPayload(), Message.class);
 				log.debug(String.format("Message: %s", msg.toString()));
-				
+
 				// Schedule Job for this resultset
 				String jobId = msg.getPayload().getJobId();
 				String idsJobId = msg.getPayload().getIdsJobId();
 				int expectedRows = msg.getPayload().getExpectedRows();
-				String jobName = idsJobId != null && idsJobId.length() > 0 ? JOB_NAME_IDS : JOB_NAME;
-				
+				String jobName = idsJobId != null && !idsJobId.isEmpty() ? JOB_NAME_IDS : JOB_NAME;
+
 				JobDetail jobDetail = schedulerComponent.createJobDetail(String.format("%s_%s", jobName, jobId), jobId, idsJobId, expectedRows);
 				Trigger trigger = schedulerComponent.createTrigger(jobDetail);
 				scheduler.scheduleJob(jobDetail, trigger);
-				
+
 				// Send ACK
 				BasicAcknowledgeablePubsubMessage originalMessage = message.getHeaders()
 						.get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
-				originalMessage.ack();	
-							
+				originalMessage.ack();
+
 			} catch (IOException ioe) {
 				log.error(String.format("Unable to read message: %s", ioe));
 
 				// Send NACK
 				BasicAcknowledgeablePubsubMessage originalMessage = message.getHeaders()
 						.get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
-				originalMessage.nack();	
+				originalMessage.nack();
 			} catch (SchedulerException se) {
 				log.error(String.format("Unable to schedule job: %s", se));
 			}
 		};
 	}
 }
+

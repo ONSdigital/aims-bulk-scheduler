@@ -1,9 +1,18 @@
 spring:
   autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - com.google.cloud.spring.autoconfigure.bigquery.GcpBigQueryAutoConfiguration
   cloud:
     gcp:
       project-id: ${embedded.google.pubsub.project-id}
-      pubsub.emulatorHost: ${embedded.google.pubsub.host}:${embedded.google.pubsub.port}
+      credentials:
+        enabled: false
+      pubsub:
+        emulator-host: ${embedded.google.pubsub.host}:${embedded.google.pubsub.port}
       sql:
         enabled: false
+aims:
+  pubsub:
+    subscription: processing-finished-subscription-test
+    export-topic: bulk-scheduler-test
